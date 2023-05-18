@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite"
 import React, { FC } from "react"
 import { Button, Text } from "app/components"
-import { Image, ImageStyle, TextStyle, View, ViewStyle,StyleSheet } from "react-native"
+import { Image, ImageStyle, TextStyle, View, ViewStyle,StyleSheet,TouchableOpacity } from "react-native"
 import { AppStackScreenProps } from "../navigators" // @demo remove-current-line
 import { useHeader } from "../utils/useHeader" // @demo remove-current-line
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
@@ -32,6 +32,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
         </View>
     )
 })
+
 const styles = StyleSheet.create({
     Textbtn:{
         textAlign:'center',
@@ -44,13 +45,6 @@ const styles = StyleSheet.create({
 })
 
 
-// const Textbtn = styled.Text`
-//     text-align: center;
-//     font-size: 30px;
-//     border-radius: 10px;
-//     padding: 15px;
-//     background-color: rgb(114, 217, 139);
-//     border: 1px;
-// `;
+
 
 
