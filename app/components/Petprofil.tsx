@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Image, ImageStyle, TextStyle, ViewStyle,StyleSheet,TouchableOpacity } from "react-native"
+import { Image,Text, ImageStyle, TextStyle, ViewStyle,StyleSheet,TouchableOpacity } from "react-native"
 
 
 
@@ -7,8 +7,14 @@ import { Image, ImageStyle, TextStyle, ViewStyle,StyleSheet,TouchableOpacity } f
 
 export const Petprofile = (props) =>{
     return(
-        <View></View>    
-   
+        <View style = {styles.Profil}>
+                <Image style={styles.Myimage} source={props.post.frofileImg}></Image>
+                <View style={styles.Profdetails}>
+                    <Text style={styles.Name}> {props.post.name}</Text>
+                    <Text style={styles.Age}>Age: {props.post.age}</Text>
+                    <Image style={styles.Genderimg} source={props.post.gender}></Image>
+                </View>
+        </View>    
     );
 }
 const styles = StyleSheet.create({

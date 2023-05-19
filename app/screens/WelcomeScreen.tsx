@@ -6,7 +6,7 @@ import { AppStackScreenProps } from "../navigators" // @demo remove-current-line
 import { useHeader } from "../utils/useHeader" // @demo remove-current-line
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 import { useNavigation } from "@react-navigation/native"
-
+import { Petprofile } from "app/components/Petprofil"
 
 interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> { }
 
@@ -28,7 +28,27 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
 
     return (
         <View>
-            <Button onPress={handleButtonProfile}> profile</Button>
+            <TouchableOpacity onPress={()=> navigation.navigate('Меню')}>
+            <Petprofile 
+            post ={{
+                name : "elizabet",
+                age : "7",
+                'gender' : require('../../assets/images/woman.png'),
+                'frofileImg': require('../../assets/images/123.jpg'),
+            }}
+            ></Petprofile>
+        </TouchableOpacity>
+        <TouchableOpacity >
+            <Petprofile 
+            post ={{
+                name : "patrik",
+                age : "3",
+                'gender' : require('../../assets/images/man.png'),
+                'frofileImg': require('../../assets/images/321.jpg'),
+            }}
+            ></Petprofile>
+        </TouchableOpacity>
+            {/* <Button onPress={handleButtonProfile}> profile</Button> */}
         </View>
     )
 })
