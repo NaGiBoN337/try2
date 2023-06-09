@@ -22,6 +22,21 @@ import * as storage from "./utils/storage"
 import { customFontsToLoad } from "./theme"
 import { setupReactotron } from "./services/reactotron"
 import Config from "./config"
+import {Database} from '@nozbe/watermelondb';
+import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
+import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
+
+// import mySchema from "./models/Shema"
+// import { Pet,Vaccination } from "./models/Pets"
+
+// const adapter = new SQLiteAdapter({
+//     schema: mySchema,
+//   });
+// const database = new Database({
+//     adapter,
+//     modelClasses: [Pet,Vaccination],
+//     // actionsEnabled: true,
+// });
 
 // Set up Reactotron, which is a free desktop app for inspecting and debugging
 // React Native apps. Learn more here: https://github.com/infinitered/reactotron
@@ -103,6 +118,7 @@ function App(props: AppProps) {
 
   // otherwise, we're ready to render the app
   return (
+    // <DatabaseProvider database={database}> 
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <ErrorBoundary catchErrors={Config.catchErrors}>
         <AppNavigator
@@ -112,6 +128,8 @@ function App(props: AppProps) {
         />
       </ErrorBoundary>
     </SafeAreaProvider>
+    // </DatabaseProvider>
+    
   )
 }
 

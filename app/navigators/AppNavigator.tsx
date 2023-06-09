@@ -20,9 +20,11 @@ import { useStores } from "../models" // @demo remove-current-line
 import {
   LoginScreen, // @demo remove-current-line
   WelcomeScreen,
-  CreateScreen,
   ProfilPet,
 } from "../screens"
+import CreateScreen from "app/screens/CreateScreen"
+import { CreateVaccination } from "app/screens/Vaccination"
+import { CreateCalc } from "app/screens/Calc"
 import { DemoNavigator, DemoTabParamList } from "./DemoNavigator" // @demo remove-current-line
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
@@ -58,7 +60,8 @@ const AppStack = observer(function AppStack() {
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Create" component={CreateScreen} />
           <Stack.Screen name="Profil" component={ProfilPet} />
-    
+          <Stack.Screen name="Vaccination" component={CreateVaccination} />  
+          <Stack.Screen name="Calc" component={CreateCalc} /> 
     </Stack.Navigator>
   )
 })
