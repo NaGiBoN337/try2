@@ -28,8 +28,8 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
         console.log('переход');
         navigation.navigate("Create")
     }
-    const handleButtonProfile = (id) => {
-        navigation.navigate("Profil",{id})
+    const handleButtonProfile = (idPet) => {
+        navigation.navigate("Profil",{idPet})
     }
     useHeader({
         title: "PetsProfile",

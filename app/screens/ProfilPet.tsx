@@ -12,12 +12,14 @@ import {
 } from "react-native"
 import { AppStackScreenProps } from "../navigators" // @demo remove-current-line
 import { useHeader } from "../utils/useHeader" // @demo remove-current-line
-import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 import { useNavigation } from "@react-navigation/native"
 import { Button, Text } from "app/components"
 import { useEffect, useState } from "react"
 import { formatDate } from "app/Functions/Mainfunc"
 import SQLite, { SQLTransaction, SQLError, SQLResultSet } from "react-native-sqlite-2"
+import calculateAge from "app/Functions/CalcDate"
+
+
 
 const db = SQLite.openDatabase("mydatabase.db", "1.0", "", 1)
 
@@ -25,7 +27,10 @@ interface ProfilPet extends AppStackScreenProps<"Profil"> {}
 
 export const ProfilPet: FC<ProfilPet> = observer(function ProfilPet({ route }) {
   const [petsData, setPetsData] = useState([])
-
+  useEffect(() => {
+    fetchData();
+  }, []);
+  
   const navigation = useNavigation()
 
   const handleButtonPress = () => {
@@ -42,35 +47,44 @@ export const ProfilPet: FC<ProfilPet> = observer(function ProfilPet({ route }) {
   })
   const { idPet } = route.params
 
-  console.log(idPet)
-  const fetchData = () => {
-    db.transaction((tx: SQLTransaction) => {
-      tx.executeSql(
-        "SELECT * FROM pets;",
-        [],
-        (tx: SQLTransaction, result: SQLResultSet) => {
-          const pets = []
-          for (let i = 0; i < result.rows.length; i++) {
-            const row = result.rows.item(i)
-            pets.push(row)
-          }
-          console.log(pets)
-          setPetsData(pets)
-        },
-        (tx: SQLTransaction, error: SQLError) => {
-          console.log("Ошибка при выборке данных:", error)
-        },
-      )
-    })
-  }
+
+  const fetchData = async () => {
+    try {
+      const pet = await new Promise((resolve, reject) => {
+        db.transaction((tx) => {
+          tx.executeSql(
+            'SELECT * FROM pets WHERE id = ?;',
+            [idPet],
+            (tx: SQLTransaction, resultSet: SQLResultSet) => {
+              if (resultSet.rows.length > 0) {
+                const pet = resultSet.rows.item(0);
+                resolve(pet);
+              } else {
+                resolve(null);
+              }
+            },
+            (tx: SQLTransaction, error: SQLError) => {
+              reject(error);
+            }
+          );
+        });
+      });
+  
+      console.log(pet);
+      console.log(pet.dateBirth);
+      setPetsData(pet ? [pet] : []);
+    } catch (error) {
+      console.log('Ошибка при выборке данных:', error);
+    }
+  };
 
   return (
     <ScrollView>
       <View style={styles.MainDiv}>
         <View style={styles.Header}>
           <View style={styles.HeaderDivText}>
-            <Text style={styles.NameT}>Elizabet</Text>
-            <Text>Африканский бульдог, 7 лет</Text>
+            <Text style={styles.NameT}>{petsData[0]?.name}</Text>
+            <Text>{petsData[0]?.type}, {calculateAge(petsData[0]?.dateBirth)}</Text>
           </View>
           <Image style={styles.ImgHeader} source={require("../../assets/images/123.jpg")}></Image>
         </View>
@@ -174,8 +188,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   NameT: {
-    fontSize: 20,
-    fontWeight: "500",
+    fontSize: 23,
+    fontWeight: "600",
   },
   ContainerDiv: {
     marginTop: "5%",
