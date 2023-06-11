@@ -27,20 +27,29 @@ interface ProfilPet extends AppStackScreenProps<"Profil"> {}
 
 export const ProfilPet: FC<ProfilPet> = observer(function ProfilPet({ route }) {
   const [petsData, setPetsData] = useState([])
+  const [imageData, setImageData] = React.useState()
   useEffect(() => {
     fetchData();
   }, []);
-  
+  useEffect(() => {
+    if (petsData.length > 0) {
+      setImageData(petsData[0]?.imgbase)
+    }
+  }, [petsData])
+
   const navigation = useNavigation()
 
   const handleButtonPress = () => {
     navigation.goBack()
   }
   const handleVaccination = () => {
-    navigation.navigate("Vaccination")
+    navigation.navigate("Vaccination",{idPet})
   }
   const handleCalc = () => {
     navigation.navigate("Calc")
+  }
+  const BtnEdit = () =>  {
+    navigation.navigate("Edit", {idPet})
   }
   useHeader({
     title: "Профиль",
@@ -69,9 +78,7 @@ export const ProfilPet: FC<ProfilPet> = observer(function ProfilPet({ route }) {
           );
         });
       });
-  
-      console.log(pet);
-      console.log(pet.dateBirth);
+      
       setPetsData(pet ? [pet] : []);
     } catch (error) {
       console.log('Ошибка при выборке данных:', error);
@@ -81,13 +88,19 @@ export const ProfilPet: FC<ProfilPet> = observer(function ProfilPet({ route }) {
   return (
     <ScrollView>
       <View style={styles.MainDiv}>
-        <View style={styles.Header}>
-          <View style={styles.HeaderDivText}>
-            <Text style={styles.NameT}>{petsData[0]?.name}</Text>
-            <Text>{petsData[0]?.type}, {calculateAge(petsData[0]?.dateBirth)}</Text>
+        {petsData.length > 0 ? (
+            <View style={styles.Header}>
+            <View style={styles.HeaderDivText}>
+              <TouchableOpacity onPress={BtnEdit}>
+              <Text style={styles.NameT}>{petsData[0]?.name}</Text>
+              <Text>{petsData[0]?.type}, {calculateAge(petsData[0]?.dateBirth)}</Text>
+              </TouchableOpacity>
+            </View>
+            <Image style={styles.ImgHeader} source={{ uri: `data:image/jpeg;base64,${imageData}` }}></Image>
           </View>
-          <Image style={styles.ImgHeader} source={require("../../assets/images/123.jpg")}></Image>
-        </View>
+
+        ):  (<Text>Загрузка данных...</Text>)}
+        
         <View style={styles.ContainerDiv}>
           <Text style={styles.Headerinput}>Выберите запись:</Text>
         </View>

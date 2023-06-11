@@ -27,7 +27,7 @@ import { CreateVaccination } from "app/screens/Vaccination"
 import { CreateCalc } from "app/screens/Calc"
 import { DemoNavigator, DemoTabParamList } from "./DemoNavigator" // @demo remove-current-line
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
-
+import { EditScr } from "app/screens/EditScreen"
 export type AppStackParamList = {
   Welcome: undefined
   Login: undefined // @demo remove-current-line
@@ -62,6 +62,7 @@ const AppStack = observer(function AppStack() {
           <Stack.Screen name="Profil" component={ProfilPet} />
           <Stack.Screen name="Vaccination" component={CreateVaccination} />  
           <Stack.Screen name="Calc" component={CreateCalc} /> 
+          <Stack.Screen name="Edit" component={EditScr} /> 
     </Stack.Navigator>
   )
 })

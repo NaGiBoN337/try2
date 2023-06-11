@@ -16,90 +16,97 @@ import { AppStackScreenProps } from "../navigators" // @demo remove-current-line
 import { useHeader } from "../utils/useHeader" // @demo remove-current-line
 import { useNavigation } from "@react-navigation/native"
 import { Button, Text } from "app/components"
-import { column } from "@nozbe/watermelondb/QueryDescription"
 import { SelectList } from "react-native-dropdown-select-list"
 import BtnTime from "app/components/BtnTime"
-import withObservables from "@nozbe/with-observables"
-import { withDatabase } from "@nozbe/watermelondb/DatabaseProvider"
 import SQLite, { SQLTransaction, SQLError, SQLResultSet } from "react-native-sqlite-2"
 import PetsList from "app/arrayinfo/typePets"
 import { formatDate } from "app/Functions/Mainfunc"
+import { OptionsCommon, launchImageLibrary } from "react-native-image-picker"
+
 const db = SQLite.openDatabase("mydatabase.db", "1.0", "", 1)
 
 interface CreateScreen extends AppStackScreenProps<"Create"> {}
 
 const CreateScreen: FC<CreateScreen> = observer(function CreateScreen(_props) {
-  //   const chooseAndSaveImage = () => {
-  //       const options: ImageLibraryOptions = {
-  //         mediaType: 'photo',
-  //       };
-
-  //       ImagePicker.launchImageLibrary(options, async (response: ImagePickerResponse) => {
-  //         if (response.didCancel) {
-  //           console.log('Отменено пользователем');
-  //         } else if (response.errorCode) {
-  //           console.log('Ошибка:', response.errorCode);
-  //         } else {
-  //           const imageData = await readFile(response.assets[0].base64, 'base64');
-
-  //           console.log('Код изображения:', imageData);
-  //         }
-  //       });
-  //     };
-
   const navigation = useNavigation()
 
   const handleButtonPress = async () => {
     try {
-      await insertData();
-      navigation.goBack();
+      await insertData()
+      navigation.goBack()
     } catch (error) {
-      console.log('Ошибка при вставке данных:', error);
+      console.log("Ошибка при вставке данных:", error)
     }
-  };
+  }
 
   const [selected, setSelected] = React.useState("")
   const [name, onChangeName] = React.useState("")
   const [dateBirth, setDateBirth] = React.useState()
-
-  
   const [selectedGender, setSelectedGender] = React.useState("male")
+  const [imageData, setImageData] = React.useState("")
 
   const handleGenderPress = (gender) => {
     console.log(gender)
     setSelectedGender(gender)
   }
-
+  const handleButtonPressl = () => {
+    console.log(dateBirth)
+  }
   useHeader({
     title: "Создание нового профиля",
   })
+  const chooseImage = () => {
+    const options: OptionsCommon = {
+      includeBase64: true,
+      mediaType: "photo",
+    }
 
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) {
+        console.log("User cancelled image picker")
+      } else if (response.errorCode) {
+        console.log("ImagePicker Error: ", response.errorMessage)
+      } else {
+        // Выбор изображения успешен, здесь вы можете обработать выбранное изображение
+        console.log("Base64: ", response.assets[0].base64)
+        setImageData(response.assets[0].base64)
+      }
+    })
+  }
   const insertData = () => {
     return new Promise((resolve, reject) => {
       db.transaction((tx: SQLTransaction) => {
         tx.executeSql(
           "INSERT INTO pets (name, type, gender, dateBirth, imgbase) VALUES (?, ?, ?, ?, ?);",
-          [name, selected, selectedGender, formatDate(dateBirth), "base64 image data"],
+          [name, selected, selectedGender, formatDate(dateBirth), imageData],
           (tx: SQLTransaction, result: SQLResultSet) => {
-            console.log("Данные успешно вставлены!");
-            resolve(result);
+            console.log("Данные успешно вставлены!")
+            resolve(result)
           },
           (tx: SQLTransaction, error: SQLError) => {
-            console.log("Ошибка при вставке данных:", error);
-            reject(error);
-          }
-        );
-      });
-    });
-  };
- 
+            console.log("Ошибка при вставке данных:", error)
+            reject(error)
+          },
+        )
+      })
+    })
+  }
+
   return (
     <ScrollView>
-      <TouchableWithoutFeedback>
-        <Image
+      <TouchableWithoutFeedback onPress={chooseImage}>
+        {/* <Image
           style={styles.UploadImg}
           source={require("../../assets/images/selectgen2.png")}
-        ></Image>
+        ></Image> */}
+        {imageData ? (
+          <Image style={styles.UploadImg} source={{ uri: `data:image/jpeg;base64,${imageData}` }} />
+        ) : (
+          <Image
+            style={styles.UploadImg}
+            source={require("../../assets/images/selectgen2.png")}
+          ></Image>
+        )}
       </TouchableWithoutFeedback>
       <View style={styles.MainDiv}>
         <View style={styles.ContainerDiv}>
@@ -160,6 +167,10 @@ const CreateScreen: FC<CreateScreen> = observer(function CreateScreen(_props) {
             {" "}
             Создать
           </Button>
+          <Button style={styles.TextBtn} onPress={handleButtonPressl}>
+            {" "}
+            check
+          </Button>
         </View>
       </View>
     </ScrollView>
@@ -196,6 +207,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   UploadImg: {
+    borderRadius: 20,
     marginTop: "5%",
     width: 140,
     height: 140,
